@@ -97,6 +97,10 @@ class TransactionView {
   }
 
   sortPrice(e) {
+    e.preventDefault();
+
+    const query = searchInput.value.trim();
+
     const isAscending = e.target.dataset.order === "asc";
     const sortOrder = isAscending ? "desc" : "asc";
 
@@ -107,16 +111,40 @@ class TransactionView {
     e.target.classList.toggle("down", !isAscending);
     e.target.classList.toggle("up", isAscending);
 
-    //api
-    axios
-      .get(`http://localhost:3000/transactions?_sort=price&_order=${sortOrder}`)
-      .then((res) => {
-        const sortedTransactions = res.data;
-        console.log(sortedTransactions);
-        // Ipdated UI
-        this.uiTransaction(sortedTransactions);
-      })
-      .catch((err) => console.error("Error:", err));
+    if (query) {
+      // remove innet table
+      tableBody.innerHTML = "";
+
+      axios
+        .get(
+          ` http://localhost:3000/transactions?refId_like=${query}&_sort=price&_order=${sortOrder}`
+        )
+        .then((res) => {
+          const searchedtransactions = res.data;
+
+          // save to local storage
+          Storage.saveTransactions(searchedtransactions);
+
+          // add data to table
+          this.uiTransaction(searchedtransactions);
+        })
+        .catch((err) => console.log(err));
+    } else {
+      //api
+      axios
+        .get(
+          `http://localhost:3000/transactions?_sort=price&_order=${sortOrder}`
+        )
+        .then((res) => {
+          const sortedTransactions = res.data;
+
+          //save to local storage
+          Storage.saveTransactions(sortedTransactions);
+          // Ipdated UI
+          this.uiTransaction(sortedTransactions);
+        })
+        .catch((err) => console.error(err));
+    }
   }
 
   sortDate(e) {
@@ -139,6 +167,8 @@ class TransactionView {
         return new Date(a.date) > new Date(b.date) ? 1 : -1;
       });
     }
+    //save to local storage
+    Storage.saveTransactions(this.TransactionsData);
 
     // Ipdated UI
     this.uiTransaction(this.TransactionsData);
