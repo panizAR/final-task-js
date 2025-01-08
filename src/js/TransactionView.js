@@ -6,11 +6,15 @@ const buttonSection = document.querySelector(".button-section");
 const searchForm = document.querySelector(".search-form");
 const tableBody = document.querySelector("tbody");
 const searchInput = document.querySelector("#search-input");
+const PriceSortBtn = document.querySelector("#price-sort");
+const DateSortBtn = document.querySelector("#Date-sort");
 
 class TransactionView {
   constructor() {
     uploadedBtn.addEventListener("click", (e) => this.showTableView(e));
     searchInput.addEventListener("input", (e) => this.searchTransaction(e));
+    PriceSortBtn.addEventListener("click", (e) => this.sortPrice(e));
+    DateSortBtn.addEventListener("click", (e) => this.sortDate(e));
 
     this.TransactionsData = [];
   }
@@ -72,20 +76,8 @@ class TransactionView {
 
   searchTransaction(e) {
     e.preventDefault();
-    const query = e.target.value.trim();
 
-    // just number
-    if (!/^\d*$/.test(query)) {
-      console.log("فقط اعداد مجاز هستند.");
-      tableBody.innerHTML = "";
-      // tableBody.innerHTML = "<div>فقط اعداد مجاز هستند.</div>";
-      return;
-    }
-    // empty
-    if (query === "") {
-      this.uiTransaction(this.TransactionsData);
-      return;
-    }
+    const query = e.target.value.trim();
 
     // remove innet table
     tableBody.innerHTML = "";
@@ -95,8 +87,6 @@ class TransactionView {
       .then((res) => {
         const searchedtransactions = res.data;
 
-        console.log(searchedtransactions);
-
         // save to local storage
         Storage.saveTransactions(searchedtransactions);
 
@@ -104,6 +94,54 @@ class TransactionView {
         this.uiTransaction(searchedtransactions);
       })
       .catch((err) => console.log(err));
+  }
+
+  sortPrice(e) {
+    const isAscending = e.target.dataset.order === "asc";
+    const sortOrder = isAscending ? "desc" : "asc";
+
+    //new dataset
+    e.target.dataset.order = sortOrder;
+
+    // change direction icon
+    e.target.classList.toggle("down", !isAscending);
+    e.target.classList.toggle("up", isAscending);
+
+    //api
+    axios
+      .get(`http://localhost:3000/transactions?_sort=price&_order=${sortOrder}`)
+      .then((res) => {
+        const sortedTransactions = res.data;
+        console.log(sortedTransactions);
+        // Ipdated UI
+        this.uiTransaction(sortedTransactions);
+      })
+      .catch((err) => console.error("Error:", err));
+  }
+
+  sortDate(e) {
+    const isAscending = e.target.dataset.order === "asc";
+    const sortOrder = isAscending ? "desc" : "asc";
+
+    //new dataset
+    e.target.dataset.order = sortOrder;
+
+    // change direction icon
+    e.target.classList.toggle("down", !isAscending);
+    e.target.classList.toggle("up", isAscending);
+
+    if (e.target.dataset.order === "desc") {
+      this.TransactionsData = this.TransactionsData.sort((a, b) => {
+        return new Date(a.date) > new Date(b.date) ? -1 : 1;
+      });
+    } else {
+      this.TransactionsData = this.TransactionsData.sort((a, b) => {
+        return new Date(a.date) > new Date(b.date) ? 1 : -1;
+      });
+    }
+
+    // Ipdated UI
+    this.uiTransaction(this.TransactionsData);
   }
 }
 

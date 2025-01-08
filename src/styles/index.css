@@ -194,5 +194,6 @@ tr:hover {
   transform: rotate(180deg);
 }
 .up {
-  transform: rotate(360deg);
+  transform: rotate(0deg);
+  transition: all 500ms linear;
 }
