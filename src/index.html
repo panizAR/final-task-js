@@ -5,12 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>تسک دوره جاوااسکریپت</title>
     <link rel="stylesheet" href="./styles/index.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css"
+      integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
   </head>
 
   <body>
     <header>
       <h3>لیست تراکنش ها</h3>
-      <form class="search-form hidden">
+      <div class="search-form hidden">
         <input
           type="text"
           name="search-input"
@@ -24,7 +31,7 @@
             class="searc-icon"
           />
         </label>
-      </form>
+      </div>
     </header>
 
     <section class="button-section">
@@ -38,9 +45,15 @@
           <tr>
             <th>ردیف</th>
             <th>نوع تراکنش</th>
-            <th>مبلغ</th>
+            <th>
+              مبلغ
+              <span><i class="fa-solid fa-angle-up down price-sort"></i></span>
+            </th>
             <th>شماره پیگیری</th>
-            <th>تاریخ تراکنش</th>
+            <th>
+              تاریخ تراکنش
+              <span><i class="fa-solid fa-angle-up up"></i></span>
+            </th>
           </tr>
         </thead>
         <tbody>

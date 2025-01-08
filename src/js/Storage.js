@@ -9,14 +9,9 @@ export default class Storage {
     const savedTransaction =
       JSON.parse(localStorage.getItem("Transaction")) || [];
 
-    // // sort=> نزولی des
-    // savedTransaction.sort((a, b) => {
-    //   return new Date(a.date) > new Date(b.date) ? -1 : 1;
-    // });
-
     // sort=> نزولی des
     savedTransaction.sort((a, b) => {
-      return a.id > b.id ? -1 : 1;
+      return a.id > b.id ? 1 : -1;
     });
 
     return savedTransaction;
