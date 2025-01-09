@@ -87,9 +87,6 @@ class TransactionView {
       .then((res) => {
         const searchedtransactions = res.data;
 
-        // save to local storage
-        Storage.saveTransactions(searchedtransactions);
-
         // add data to table
         this.uiTransaction(searchedtransactions);
       })
@@ -97,8 +94,6 @@ class TransactionView {
   }
 
   sortPrice(e) {
-    e.preventDefault();
-
     const query = searchInput.value.trim();
 
     const isAscending = e.target.dataset.order === "asc";
@@ -122,10 +117,7 @@ class TransactionView {
         .then((res) => {
           const searchedtransactions = res.data;
 
-          // save to local storage
-          Storage.saveTransactions(searchedtransactions);
-
-          // add data to table
+          // updated UI
           this.uiTransaction(searchedtransactions);
         })
         .catch((err) => console.log(err));
@@ -138,9 +130,7 @@ class TransactionView {
         .then((res) => {
           const sortedTransactions = res.data;
 
-          //save to local storage
-          Storage.saveTransactions(sortedTransactions);
-          // Ipdated UI
+          // updated UI
           this.uiTransaction(sortedTransactions);
         })
         .catch((err) => console.error(err));
@@ -148,6 +138,8 @@ class TransactionView {
   }
 
   sortDate(e) {
+    searchInput.value = "";
+
     const isAscending = e.target.dataset.order === "asc";
     const sortOrder = isAscending ? "desc" : "asc";
 
@@ -167,10 +159,8 @@ class TransactionView {
         return new Date(a.date) > new Date(b.date) ? 1 : -1;
       });
     }
-    //save to local storage
-    Storage.saveTransactions(this.TransactionsData);
 
-    // Ipdated UI
+    // Updated UI
     this.uiTransaction(this.TransactionsData);
   }
 }
